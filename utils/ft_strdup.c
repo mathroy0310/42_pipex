@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/18 18:19:31 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 14:30:41 by maroy            ###   ########.fr       */
+/*   Created: 2022/10/20 16:11:37 by maroy             #+#    #+#             */
+/*   Updated: 2023/04/19 14:51:13 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.h"
 
-int	ft_strlen(char *s)
+char	*ft_strdup(char *s1)
 {
-	int	i;
+	char	*s2;
+	int		len;
+	int		i;
 
+	if (!s1)
+		return (NULL);
+	len = (int) ft_strlen(s1) + 1;
+	s2 = malloc(sizeof (char) * len);
+	if (s2 == NULL)
+		return (NULL);
 	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
+	while (s1[i])
+	{
+		s2[i] = s1[i];
 		i++;
-	return (i);
+	}
+	s2[i] = 0;
+	return (s2);
 }
-

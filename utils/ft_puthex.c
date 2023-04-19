@@ -6,11 +6,11 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 12:03:56 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/18 18:27:49 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/19 14:17:22 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_printf.h"
+#include "../includes/utils.h"
 
 void	ft_puthex(unsigned long n, int *count)
 {

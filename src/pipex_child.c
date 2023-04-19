@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   pipex_child.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/18 18:19:31 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 14:30:41 by maroy            ###   ########.fr       */
+/*   Created: 2023/04/19 15:17:20 by maroy             #+#    #+#             */
+/*   Updated: 2023/04/19 15:31:06 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/utils.h"
+#include "../includes/pipex.h"
 
-int	ft_strlen(char *s)
+char *get_full_command(char **paths, char *cmd)
 {
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
+	char *temp;
+	char *command;
+    
+	while(*paths)
+	{
+		temp = ft_strjoin(*paths, "/");
+		command = ft_strjoin(temp, cmd);
+		free(temp);
+		if(access(command, 0) == 0)
+			return (command);
+		free(command);
+    	paths++;
+	}
+	return (NULL);
 }
-

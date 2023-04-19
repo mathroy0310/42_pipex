@@ -6,11 +6,11 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 19:00:54 by marvin            #+#    #+#             */
-/*   Updated: 2023/04/18 18:27:56 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/19 14:17:14 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_printf.h"
+#include "../includes/utils.h"
 
 void	ft_putunbr(unsigned int n, int *count)
 {

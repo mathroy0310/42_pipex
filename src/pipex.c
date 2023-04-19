@@ -6,11 +6,21 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:29:38 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 00:18:34 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/19 16:17:11 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
+char *findPath(char **envp)
+{
+	//jassume que PATH est toujours dedans
+	//PATH=/usr/local/bin:/usr/bin:/bin
+	while (ft_strncmp("PATH", *envp, 4))
+		envp++;
+	return (*envp + 5);//+5 skip le PATH=
+	
+}
 
 int errorMessage(char *error)
 {
@@ -18,10 +28,10 @@ int errorMessage(char *error)
     return(EXIT_FAILURE);
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex pipex;
-
+	
 	if (argc != 5)
 		return (errorMessage(ERROR_ARGC));
 	pipex.infile = open(argv[1], O_RDONLY);
@@ -32,20 +42,22 @@ int	main(int argc, char *argv[])
 		return (errorMessage(ERROR_OUTFILE));
 	if (pipe(pipex.end) < 0)
 		return (errorMessage(ERROR_PIPE));
+	pipex.paths = findPath(envp);
+	pipex.cmd_paths = ft_split(pipex.paths, ':');
+	
 	pipex.pid1 = fork();
 	if (pipex.pid1 == 0)
 	{
 		//first Child
 		dup2(pipex.end[1], 1);
 		close(pipex.end[0]);
-		dup2(pipex.infile, 0);
+		dup2(pipex.end[0], 0);
 
-		//je dois execve kekpart icitte
-		
-		/* Replace the current process, executing PATH with arguments ARGV and
-  		 environment ENVP.  ARGV and ENVP are terminated by NULL pointers.  */
-		 
-		//execve(path, argv , envp);
+		pipex.cmd_args = ft_split(argv[2], ' ');
+		pipex.cmd = get_full_command(pipex.cmd_paths, pipex.cmd_args[0]);
+		if(!pipex.cmd)
+			errorMessage("first child PIPEX.CMD crash\n");
+		execve(pipex.cmd, pipex.cmd_args, envp);
 	}
 		
 	pipex.pid2 = fork();
@@ -54,65 +66,17 @@ int	main(int argc, char *argv[])
 		//second chilrd
 		dup2(pipex.end[0], 0);
 		close(pipex.end[1]);
-		dup2(pipex.infile, 1);
+		dup2(pipex.outfile, 1);
 
-		//je dois execve kekpart icitte
-
-		/* Replace the current process, executing PATH with arguments ARGV and
-  		 environment ENVP.  ARGV and ENVP are terminated by NULL pointers.  */
-		 
-		//execve(path, argv , envp);
+		pipex.cmd_args = ft_split(argv[3], ' ');
+		pipex.cmd = get_full_command(pipex.cmd_paths, pipex.cmd_args[0]);
+		if(!pipex.cmd)
+			errorMessage("2nd child PIPEX.CMD crash\n");
+		execve(pipex.cmd, pipex.cmd_args, envp);
 	}
+	close(pipex.end[0]);
+	close(pipex.end[1]);
+	waitpid(pipex.pid1, NULL, 0);
+	waitpid(pipex.pid2, NULL, 0 );
 	return (EXIT_SUCCESS);
 }
-
-// int	test(int argc, char *argv[])
-// {
-// 	int end[2];
-// 	int f1;
-// 	int f2;
-// 	pid_t parent;
-// 	pipe(end);
-
-// 	if (argc < 5)
-// 	{
-// 		ft_printf("\033[1;31m ERROR 🛑 : Must have more than 5 argc.	\033[0m");
-// 		return (EXIT_FAILURE);
-// 	}
-// 	parent = fork();
-
-// 	char *infile = argv[1];
-// 	// char *cmd1 = argv[2];
-// 	// char *cmd2 = argv[3];
-// 	char *outfile = argv[4];
-
-// 	f1 = open(infile, STDIN_FILENO);
-// 	f2 = open(outfile, STDOUT_FILENO);
-
-// 	if (parent == -1)
-// 	{
-// 		perror("Fork: ");
-// 		return (EXIT_FAILURE);
-// 	}
-// 	if (!parent) // if fork() returns 0, we are in the child process
-// 	{
-// 		dup2(f1, STDIN_FILENO);
-// 		dup2(end[1], STDOUT_FILENO);
-
-// 		close(end[1]);
-// 		close(f1);
-// 		return (EXIT_FAILURE);
-// 	}
-// 	else
-// 	{
-// 		int status;
-// 		waitpid(-1, &status, 0);
-// 		dup2(f2, STDOUT_FILENO);
-// 		dup2(end[0], STDIN_FILENO);
-		
-// 		close(end[0]);
-// 		close(f2);
-// 		return (EXIT_FAILURE);
-// 	}
-// 	return (EXIT_SUCCESS);
-// }
