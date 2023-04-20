@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 15:17:20 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/20 01:27:17 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/20 17:33:31 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,11 @@ static char	*getFullCommand(char **paths, char *cmd)
 void	firstChild(t_pipex pipex, char *argv[], char *envp[])
 {
 	
-	dup2(pipex.end[1], 1);
+	dup2(pipex.fd_in, STDIN_FILENO);
+	dup2(pipex.end[1], STDOUT_FILENO);
+	close(pipex.fd_in);
+	close(pipex.fd_out);
 	close(pipex.end[0]);
-	dup2(pipex.infile, 0);
 
 	pipex.cmd_args = ft_split(argv[2], ' ');
 	pipex.cmd = getFullCommand(pipex.cmd_paths, pipex.cmd_args[0]);
@@ -45,15 +47,19 @@ void	firstChild(t_pipex pipex, char *argv[], char *envp[])
 		errorMessage(ERROR_CMD);
 		exit(1);
 	}
+	// if (execve("/bin/ls", pipex.cmd_args, envp) == -1)
+	// 	perror("execve");
 	if (execve(pipex.cmd, pipex.cmd_args, envp) == -1)
 		perror("execve");
 }
 
 void	secondChild(t_pipex pipex, char *argv[], char *envp[])
 {
-	dup2(pipex.end[0], 0);
+	dup2(pipex.end[0], STDIN_FILENO);
+	dup2(pipex.fd_out, STDOUT_FILENO);
+	close(pipex.fd_in);
+	close(pipex.fd_out);
 	close(pipex.end[1]);
-	dup2(pipex.outfile, 1);
 
 	pipex.cmd_args = ft_split(argv[3], ' ');
 	pipex.cmd = getFullCommand(pipex.cmd_paths, pipex.cmd_args[0]);
@@ -63,6 +69,8 @@ void	secondChild(t_pipex pipex, char *argv[], char *envp[])
 		errorMessage(ERROR_CMD);
 		exit(1);
 	}
+	// if (execve("/bin/wc", pipex.cmd_args, envp) == -1)
+	// 	perror("execve");
 	if (execve(pipex.cmd, pipex.cmd_args, envp) == -1)
 		perror("execve");
 }

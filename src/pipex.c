@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:29:38 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/20 01:26:32 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/20 17:07:55 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ int	main(int argc, char *argv[], char *envp[])
 	
 	if (argc != 5)
 		return (errorMessage(ERROR_ARGC));
-	pipex.infile = open(argv[1], O_RDONLY);
-	if (pipex.infile < 0)
+	pipex.fd_in = open(argv[1], O_RDONLY);
+	if (pipex.fd_in < 0)
 		return (errorMessage(ERROR_INFILE));
-	pipex.outfile = open(argv[argc - 1], O_TRUNC | O_CREAT | O_RDWR, 0000644);
-	if (pipex.outfile < 0)
+	pipex.fd_out = open(argv[argc - 1],  O_WRONLY | O_CREAT | O_TRUNC,  0666);
+	if (pipex.fd_out < 0)
 		return (errorMessage(ERROR_OUTFILE));
 	if (pipe(pipex.end) < 0)
 		return (errorMessage(ERROR_PIPE));
