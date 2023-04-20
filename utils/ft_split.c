@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 11:26:09 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 14:51:57 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/20 00:57:37 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,24 @@
 static int	count_word(char *s, char c)
 {
 	int	i;
-	int	words;
+	int	j;
 
-	if (!s)
-		return (0);
 	i = 0;
-	words = 0;
-	while (s[i])
+	j = 0;
+	while (*s)
 	{
-		if (s[i] != c && (s[i + 1] == '\0' || s[i + 1] == c))
-			words++;
-		i++;
+		if (*s != c)
+			i++;
+		else if (*s == c && i != 0)
+		{
+			j++;
+			i = 0;
+		}
+		s++;
 	}
-	return (words);
+	if (i != 0)
+		j++;
+	return (j);
 }
 
 static char	*split_by_delimiter(char *s, char c)
@@ -43,38 +48,43 @@ static char	*split_by_delimiter(char *s, char c)
 	return (ft_strdup(s));
 }
 
-static char	**free_strs(char **strs, char *s)
+static char	**free_arr(char **arr, char *s)
 {
 	int	i;
 
-	i = -1;
-	while (strs[++i])
-		free(strs[i]);
-	free(strs);
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 	free(s);
 	return (NULL);
 }
 
-static char	**split_string(char **strs, char *s1, char c, int j)
+static char	**split_string(char **arr, char *s1, char c, int j)
 {
-	int		i;
+	int	i;
+	char	*str;
 
+	str = s1;
 	i = 0;
 	while (i < j)
 	{
 		if (*s1 != c)
 		{
-			strs[i] = split_by_delimiter(s1, c);
-			if (!strs[i])
-				return (free_strs(strs, s1));
-			s1 = s1 + ft_strlen(strs[i]);
+			arr[i] = split_by_delimiter(s1, c);
+			if (!arr[i])
+				return (free_arr(arr, s1));
+			s1 = s1 + ft_strlen(arr[i]);
 			i++;
 		}
 		s1++;
 	}
-	strs[i] = NULL;
-	free(strs);
-	return (strs);
+	arr[i] = NULL;
+	free(str);
+	return (arr);
 }
 
 char	**ft_split(char *s, char c)
