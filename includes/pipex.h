@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:28:10 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 23:46:32 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/20 00:18:00 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
+# include <sys/uio.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include <unistd.h>
