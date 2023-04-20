@@ -6,20 +6,40 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:29:38 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/19 16:17:11 by maroy            ###   ########.fr       */
+/*   Updated: 2023/04/19 23:51:25 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-char *findPath(char **envp)
+
+static char *findPath(char **envp)
 {
-	//jassume que PATH est toujours dedans
-	//PATH=/usr/local/bin:/usr/bin:/bin
 	while (ft_strncmp("PATH", *envp, 4))
 		envp++;
 	return (*envp + 5);//+5 skip le PATH=
 	
+}
+
+static void closePipes(t_pipex *pipex)
+{
+	close(pipex->end[0]);
+	close(pipex->end[1]);
+}
+
+static void	parentFree(t_pipex *pipex)
+{
+	int	i;
+
+	i = 0;
+	close(pipex->infile);
+	close(pipex->outfile);
+	while (pipex->cmd_paths[i])
+	{
+		free(pipex->cmd_paths[i]);
+		i++;
+	}
+	free(pipex->cmd_paths);
 }
 
 int errorMessage(char *error)
@@ -46,37 +66,14 @@ int	main(int argc, char *argv[], char *envp[])
 	pipex.cmd_paths = ft_split(pipex.paths, ':');
 	
 	pipex.pid1 = fork();
-	if (pipex.pid1 == 0)
-	{
-		//first Child
-		dup2(pipex.end[1], 1);
-		close(pipex.end[0]);
-		dup2(pipex.end[0], 0);
-
-		pipex.cmd_args = ft_split(argv[2], ' ');
-		pipex.cmd = get_full_command(pipex.cmd_paths, pipex.cmd_args[0]);
-		if(!pipex.cmd)
-			errorMessage("first child PIPEX.CMD crash\n");
-		execve(pipex.cmd, pipex.cmd_args, envp);
-	}
-		
+	if (pipex.pid1 != 0)
+		firstChild(pipex, argv, envp);	
 	pipex.pid2 = fork();
-	if (pipex.pid2 == 0)
-	{
-		//second chilrd
-		dup2(pipex.end[0], 0);
-		close(pipex.end[1]);
-		dup2(pipex.outfile, 1);
-
-		pipex.cmd_args = ft_split(argv[3], ' ');
-		pipex.cmd = get_full_command(pipex.cmd_paths, pipex.cmd_args[0]);
-		if(!pipex.cmd)
-			errorMessage("2nd child PIPEX.CMD crash\n");
-		execve(pipex.cmd, pipex.cmd_args, envp);
-	}
-	close(pipex.end[0]);
-	close(pipex.end[1]);
+	if (pipex.pid2 != 0)
+		secondChild(pipex, argv, envp);
+	closePipes(&pipex);
 	waitpid(pipex.pid1, NULL, 0);
 	waitpid(pipex.pid2, NULL, 0 );
+	parentFree(&pipex);
 	return (EXIT_SUCCESS);
 }
