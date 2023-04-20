@@ -6,7 +6,7 @@
 #    By: maroy <maroy@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/18 17:31:16 by maroy             #+#    #+#              #
-#    Updated: 2023/04/19 15:20:29 by maroy            ###   ########.fr        #
+#    Updated: 2023/04/19 23:17:45 by maroy            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,14 +32,14 @@ OBJ_U		= $(UTILS:.c=.o)
 OBJS 		= $(SRCS:.c=.o) $(UTILS_SRCS:.c=.o)
 
 CC			= clang
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -g
 RM			= rm -rf
 
 %.o:	%.c $(HEADER) Makefile
-			@$(CC) $(CFLAGS)  -c $< -o $@
+			@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):	$(OBJ_M) $(OBJ_U) 
-			@$(CC) $(OBJ_M) $(OBJ_U)  -o $(NAME)
+			@$(CC) $(OBJ_M) $(OBJ_U) -o $(NAME)
 			@echo "$(GREEN)$(NAME) created !$(DEFAULT)"
 	
 all:		$(NAME)
