@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 15:17:16 by marvin            #+#    #+#             */
-/*   Updated: 2023/04/21 17:24:04 by maroy            ###   ########.fr       */
+/*   Updated: 2023/06/13 17:18:11 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,3 @@ char	*get_next_line(int fd)
 	buff = ft_next_line(buff);
 	return (line);
 }
-
