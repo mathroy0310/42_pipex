@@ -6,7 +6,7 @@
 /*   By: maroy <maroy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:28:10 by maroy             #+#    #+#             */
-/*   Updated: 2023/04/21 16:42:46 by maroy            ###   ########.fr       */
+/*   Updated: 2023/06/13 16:59:19 by maroy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,12 @@ typedef struct s_pipex
 }			t_pipex;
 
 void		first_child(t_pipex pipex, char *argv[], char *envp[]);
-void		second_child(t_pipex pipex, char *argv[], char *envp[]);
+void		second_child(t_pipex pipex, char *argv[], char *envp[], int argc);
+
 int			error_message(char *error);
+
+void	ft_close_pipes(t_pipex *pipex);
+void	ft_parent_free(t_pipex *pipex);
+void	ft_child_free(t_pipex *pipex);
 
 #endif

@@ -6,25 +6,21 @@
 #    By: maroy <maroy@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/18 17:31:16 by maroy             #+#    #+#              #
-#    Updated: 2023/04/28 13:26:53 by maroy            ###   ########.fr        #
+#    Updated: 2023/06/08 13:17:55 by maroy            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= pipex
+NAME 			= pipex
+NAME_BONUS		= pipex_bonus
 
 HEADER_DIR		= includes/
 HEADER_SRC		= pipex.h pipex_bonus.h utils.h
 HEADER			= $(addprefix $(HEADER_DIR)/, $(HEADER_SRC))
 
 MPATH_DIR		= src/mandatory
-MPATH_SRC		= pipex.c pipex_child.c
+MPATH_SRC		= pipex.c pipex_child.c free.c
 MPATH			= $(addprefix $(MPATH_DIR)/, $(MPATH_SRC))
 OBJ_M 			= $(MPATH:.c=.o)
-
-BPATH_DIR		= src/bonus
-BPATH_SRC		= pipex_bonus.c pipex_child_bonus.c
-BPATH			= $(addprefix $(BPATH_DIR)/, $(BPATH_SRC))
-OBJ_B			= $(BPATH:.c=.o)
 
 UTILS_DIR	= src/utils
 UTILS_FILES	= ft_printf.c ft_putchar.c ft_putstr.c ft_putnbr.c ft_putunnbr.c \
@@ -36,22 +32,19 @@ OBJ_U		= $(UTILS:.c=.o)
 
 OBJS 		= $(SRCS:.c=.o) $(UTILS_SRCS:.c=.o)
 
-CC			= clang
-CFLAGS		= -Wall -Wextra -Werror -g
+CC			= gcc
+#valgrind --leak-check=full --trace-children=yes --show-leak-kinds=all --track-fds=yes --track-origins=yes ./pipex
+#-fsanitize=address
+CFLAGS		= -Wall -Wextra -Werror -g 
 RM			= rm -rf
 
 %.o:	%.c $(HEADER) Makefile
 			@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):	$(OBJ_M) $(OBJ_U)
-			@$(CC) $(OBJ_M) $(OBJ_U) -o $(NAME)
+			@$(CC) $(CFLAGS) $(OBJ_M) $(OBJ_U) -o $(NAME)
 			@echo "$(GREEN)$(NAME) created !$(DEFAULT)"
 
-# bonus:		$(OBJ_B) $(OBJ_U)
-# 			@$(CC) $(OBJ_B) $(OBJ_U) -o $(NAME)
-# 			@echo "$(GREEN)$(NAME)_bonus created !$(DEFAULT)"
-
-# rebonus:	fclean bonus
 
 all:		$(NAME)
 
@@ -69,9 +62,9 @@ re:			fclean all
 
 norm:
 			@echo "$(DARKGRAY)norminette! $(DEFAULT)"
-			norminette $(MPATH) $(BPATH) $(UTILS) $(HEADER)
+			norminette $(MPATH)$(UTILS) $(HEADER)
 
-.PHONY:		all clean fclean re norm bonus rebonus
+.PHONY:		all clean fclean re norm
 
 RED = \033[1;31m
 GREEN = \033[1;32m
