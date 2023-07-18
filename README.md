@@ -49,7 +49,7 @@ $ ./pipex input.txt "sort" "uniq" output.txt
 
 ## Ressources
 
-- [Documentation de l'école 42]([fr.subject.pdf](https://cdn.intra.42.fr/pdf/pdf/93078/fr.subject.pdf))
+- [Documentation de l'école 42](https://cdn.intra.42.fr/pdf/pdf/93078/fr.subject.pdf)
 
 ## Auteur
 
